@@ -33,14 +33,14 @@ public class Render {
     
     public void drawKep(int x, int y, BetoltottKep kep){
         
-        int ujx = 0,ujy = 0;
-        int ujszel = kep.getSzel(),ujmag = kep.getMag();
-        
         //nincs kirajzolás
-        if(x < -ujszel) return;
-        if(y < -ujmag) return;
+        if(x < -kep.getSzel()) return;
+        if(y < -kep.getMag()) return;
         if(x >= kepernyoX) return;
         if(y >= kepernyoY) return;
+        
+        int ujx = 0,ujy = 0;
+        int ujszel = kep.getSzel(),ujmag = kep.getMag();
         
         //elvágott kód
         if(x < 0) ujx -= x;
@@ -57,7 +57,7 @@ public class Render {
     
     public void clear(){
         for (int i = 0; i < pixelek.length; i++) {
-            pixelek[i] = 0;
+            pixelek[i] = 0xffffffff;
         }
     }
 }

@@ -1,27 +1,31 @@
 package jatek;
 
+import jatek.res.anim.AnimJelolo;
 import motor.AbsztraktJatek;
 import motor.JatekMag;
 import motor.Render;
+import motor.grafika.BetoltottAnim;
 import motor.grafika.BetoltottKep;
 
 public class JatekIranyito extends AbsztraktJatek{
 
-    BetoltottKep  kep;
+    BetoltottAnim anim;
+    BetoltottKep kep;
     
     public JatekIranyito() {
-        kep = new BetoltottKep("teszt.png");
+        anim = new BetoltottAnim(AnimJelolo.class,"tesztanim.png",1,4,0.1);
+        kep = new BetoltottKep(AnimJelolo.class,"tesztanim.png");
     }
     
     @Override
-    public void frissit(JatekMag jm, float dt) {
+    public void frissit(JatekMag jm, double dt) {
+        anim.update(dt);
     }
 
     @Override
     public void render(JatekMag jm, Render r) {
-        r.drawKep(100,100, kep);
-        r.drawKep(jm.getBevitel().getEgerPozX()-10, jm.getBevitel().getEgerPozY()-10, kep);
-        r.setRacs(true);
+        r.drawKep(jm.getBevitel().getEgerPozX()-8, jm.getBevitel().getEgerPozY()-16, anim);
+        r.drawKep(100, 100, kep);
     }
     
     public static void main(String args[]){

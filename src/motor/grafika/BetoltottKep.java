@@ -1,19 +1,22 @@
 package motor.grafika;
 
-import jatek.res.img.IMGJelolo;
+import jatek.res.img.ImgJelolo;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 public class BetoltottKep {
     
-    private int szel,mag;
-    private int[] pixelek;
+    protected int szel,mag;
+    protected int[] pixelek;
     
-    public BetoltottKep(String nev){
-        
+    public BetoltottKep(Class c,String nev){
+        kepBetoltes(c,nev);
+    }
+
+    public void kepBetoltes(Class c,String nev){
         BufferedImage img = null;
         try{
-            img = ImageIO.read(IMGJelolo.class.getResource(nev));
+            img = ImageIO.read(c.getResource(nev));
         }catch(Exception e){System.out.println(e);}
         
         szel = img.getWidth();
@@ -22,7 +25,11 @@ public class BetoltottKep {
         
         img.flush();
     }
-
+    
+    public void update(double dt){
+        //kepnel nem szamit
+    }
+    
     public void setSzel(int szel) {
         this.szel = szel;
     }
