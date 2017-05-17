@@ -20,7 +20,7 @@ public class JatekIranyito extends AbsztraktJatek{
     @Override
     public void render(JatekMag jm, Render r) {
         r.drawKep(100,100, kep);
-        r.drawKep(jm.getBevitel().getEgerPozX(), jm.getBevitel().getEgerPozY(), kep);
+        r.drawKep(jm.getBevitel().getEgerPozX()-10, jm.getBevitel().getEgerPozY()-10, kep);
         r.setRacs(true);
     }
     

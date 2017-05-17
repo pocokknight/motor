@@ -25,17 +25,31 @@ public class Render {
     }
     
     public void setPixel(int x, int y, int ertek){
-        if(x<0 || x >= kepernyoX || y<0 || y>kepernyoY || ertek == 0xffff00ff){
+        if(x<0 || x >= kepernyoX || y<0 || y>=kepernyoY || ertek == 0xffff00ff){
             return;
         }
-        try{
-            pixelek[x+y*kepernyoX] = ertek;
-        }catch(Exception e){}
+        pixelek[x+y*kepernyoX] = ertek;
     }
     
     public void drawKep(int x, int y, BetoltottKep kep){
-        for (int i = 0; i < kep.getSzel(); i++) {
-            for (int j = 0; j < kep.getMag(); j++) {
+        
+        int ujx = 0,ujy = 0;
+        int ujszel = kep.getSzel(),ujmag = kep.getMag();
+        
+        //nincs kirajzolás
+        if(x < -ujszel) return;
+        if(y < -ujmag) return;
+        if(x >= kepernyoX) return;
+        if(y >= kepernyoY) return;
+        
+        //elvágott kód
+        if(x < 0) ujx -= x;
+        if(y < 0) ujy -= y;
+        if(ujszel + x >= kepernyoX) ujszel -= ujszel+x-kepernyoX;
+        if(ujmag + y >= kepernyoY) ujmag -= ujmag+y-kepernyoY;
+        
+        for (int i = ujx; i < ujszel; i++) {
+            for (int j = ujy; j < ujmag; j++) {
                 setPixel(i+x,j+y,kep.getPixelek()[i+j*kep.getSzel()]);
             }
         }
