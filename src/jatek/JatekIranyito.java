@@ -1,6 +1,6 @@
 package jatek;
 
-import jatek.res.anim.AnimJelolo;
+import jatek.res.betu.BetuJelolo;
 import motor.AbsztraktJatek;
 import motor.JatekMag;
 import motor.Render;
@@ -13,8 +13,8 @@ public class JatekIranyito extends AbsztraktJatek{
     BetoltottKep kep;
     
     public JatekIranyito() {
-        anim = new BetoltottAnim(AnimJelolo.class,"tesztanim.png",1,4,0.1);
-        kep = new BetoltottKep(AnimJelolo.class,"tesztanim.png");
+        anim = new BetoltottAnim(BetuJelolo.class,"tesztanim.png",1,4,0.1);
+        kep = new BetoltottKep(BetuJelolo.class,"tesztanim.png");
     }
     
     @Override
