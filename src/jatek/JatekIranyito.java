@@ -11,12 +11,12 @@ import motor.grafika.*;
 public class JatekIranyito extends AbsztraktJatek{
 
     BetoltottAnim anim;
-    BetoltottKep kep,kep2;
+    BetoltottKep kep,cursor;
     Szoveg szoveg;
     
     public JatekIranyito() {
         kep = new BetoltottKep(ImgJelolo.class, "teszt.png");
-        kep2 = new BetoltottKep(ImgJelolo.class, "teszt_1.png");
+        cursor = new BetoltottKep(ImgJelolo.class, "cursor.png");
     }
     
     @Override
@@ -26,8 +26,8 @@ public class JatekIranyito extends AbsztraktJatek{
 
     @Override
     public void render(JatekMag jm, Render r) {
-        r.drawKep(200, 200, kep);
-        r.drawKep(jm.getBevitel().getEgerPozX(), jm.getBevitel().getEgerPozY(), kep2);
+        
+        r.drawKep(jm.getBevitel().getEgerPozX(), jm.getBevitel().getEgerPozY(), cursor);
     }
     
     public static void main(String args[]){

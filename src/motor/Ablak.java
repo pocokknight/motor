@@ -29,13 +29,14 @@ public class Ablak{
         vaszon = new Canvas();
         
         ablak = new JFrame(nev);
-        ablak.setLayout(new BorderLayout());
-        ablak.add(vaszon, BorderLayout.CENTER);
+        ablak.getContentPane().add(vaszon);
         
         vaszon.setSize(kepernyoX,kepernyoY);
         ablak.pack();
         ablak.setLocationRelativeTo(null);
         ablak.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        ablak.setCursor(ablak.getToolkit().createCustomCursor(new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),"null"));
         
         ablak.setResizable(false);
         //ablak.setUndecorated(true);
@@ -67,8 +68,8 @@ public class Ablak{
     Canvas getVaszon() {
         return vaszon;
     }
-
-    boolean vanKeret() {
-        return ablak.isUndecorated();
+    
+    Container getCP(){
+        return ablak.getContentPane();
     }
 }
