@@ -29,11 +29,14 @@ public class Ablak{
         vaszon = new Canvas();
         
         ablak = new JFrame(nev);
-        ablak.setSize(kepernyoX,kepernyoY);
-        ablak.setLocationRelativeTo(null);
-        ablak.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ablak.setLayout(new BorderLayout());
         ablak.add(vaszon, BorderLayout.CENTER);
+        
+        vaszon.setSize(kepernyoX,kepernyoY);
+        ablak.pack();
+        ablak.setLocationRelativeTo(null);
+        ablak.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         ablak.setResizable(false);
         //ablak.setUndecorated(true);
         ablak.setVisible(true);

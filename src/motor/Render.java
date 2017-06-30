@@ -1,7 +1,7 @@
 package motor;
 
 import java.awt.image.*;
-import motor.grafika.BetoltottKep;
+import motor.grafika.*;
 
 public class Render {
 
@@ -9,8 +9,6 @@ public class Render {
     
     private int kepernyoX,kepernyoY;
     private int[] pixelek;
-    
-    private boolean racs = false;
     
     Render(JatekMag jm){
         this.jm = jm;
@@ -20,15 +18,58 @@ public class Render {
         
     }
     
-    public void setRacs(boolean b){
-        racs = b;
-    }
-    
     public void setPixel(int x, int y, int ertek){
-        if(x<0 || x >= kepernyoX || y<0 || y>=kepernyoY || ertek == 0xffff00ff){
+        
+        int alpha = ((ertek >> 24) & 0xff);
+        
+        if(alpha == 0){
             return;
         }
-        pixelek[x+y*kepernyoX] = ertek;
+        if(alpha == 255){
+            pixelek[x+y*kepernyoX] = ertek;    
+        }else{
+            int pixelszin = pixelek[x+y*kepernyoX];
+            
+            int ujpiros = ((pixelszin >> 16) & 0xff) - (int)((((pixelszin >> 16) & 0xff) - ((ertek >> 16) & 0xff)) * (alpha / 255f));
+            int ujzold  = ((pixelszin >>  8) & 0xff) - (int)((((pixelszin >>  8) & 0xff) - ((ertek >>  8) & 0xff)) * (alpha / 255f));
+            int ujkek   = ( pixelszin & 0xff) - (int)(((pixelszin & 0xff) - (ertek & 0xff)) * (alpha / 255f));
+            
+            pixelek[x+y*kepernyoX] = (255 << 24 | ujpiros << 16 | ujzold << 8 | ujkek);
+        }
+    }
+    
+    public void drawSzoveg(Szoveg sz,String s,int szin,int x,int y){
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            int szel = sz.getBetuSzel(c);
+            drawKep(x,y,sz.getBetu(c, szin),szel,sz.getBetuMag());
+            x += (int)(szel);
+        }
+    }
+    
+    public void drawKep(int x, int y, int[] pixelek , int szel ,int mag){
+        
+        //nincs kirajzolás
+        if(x < -szel) return;
+        if(y < -mag) return;
+        if(x >= kepernyoX) return;
+        if(y >= kepernyoY) return;
+        
+        int ujx = 0,ujy = 0;
+        int ujszel = (int)(szel),ujmag = (int)(mag);
+        
+        //elvágott kód
+        if(x < 0) ujx -= x;
+        if(y < 0) ujy -= y;
+        if(ujszel + x >= kepernyoX) ujszel -= ujszel+x-kepernyoX;
+        if(ujmag + y >= kepernyoY) ujmag -= ujmag+y-kepernyoY;
+        
+        for (int i = ujx; i < ujszel; i++) {
+            for (int j = ujy; j < ujmag; j++) {
+                int id = (int)(i+j*szel);
+                setPixel((int)(i+x),(int)(j+y),pixelek[id]);
+            }
+        }
     }
     
     public void drawKep(int x, int y, BetoltottKep kep){
@@ -57,7 +98,7 @@ public class Render {
     
     public void clear(){
         for (int i = 0; i < pixelek.length; i++) {
-            pixelek[i] = 0xffffffff;
+            pixelek[i] = 0;
         }
     }
 }

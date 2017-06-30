@@ -1,6 +1,8 @@
 package motor.grafika;
 
 import jatek.res.img.ImgJelolo;
+import jatek.res.anim.AnimJelolo;
+import jatek.res.font.FontJelolo;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 

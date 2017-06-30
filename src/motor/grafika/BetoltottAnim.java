@@ -1,6 +1,6 @@
 package motor.grafika;
 
-import jatek.res.betu.BetuJelolo;
+import jatek.res.font.FontJelolo;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 import javax.imageio.ImageIO;
@@ -30,7 +30,7 @@ public class BetoltottAnim extends BetoltottKep{
         Vector<Integer> v = new Vector();
         for (int i = 0; i < pixelek.length; i++) {
             v.add(pixelek[i]);
-            System.out.println(pixelek[i]+"   ");
+            //System.out.println(pixelek[i]+"   ");
             if(i%(mag*szel) == (mag*szel)-1){
                 kepek.add(atir(v));
                 v = new Vector();
