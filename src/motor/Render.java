@@ -38,14 +38,14 @@ public class Render {
         }
     }
     
-    /*public void drawSzoveg(Szoveg sz,String s,int szin,int x,int y){
+    public void drawSzoveg(Szoveg sz,String s,int szin,int x,int y,double sx, double sy){
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             int szel = sz.getBetuSzel(c);
-            drawKep(x,y,sz.getBetu(c, szin),szel,sz.getBetuMag());
-            x += (int)(szel);
+            drawKep(x,y,sz.getBetu(c, szin),szel,sx,sy);
+            x += (int)(szel*sx);
         }
-    }*/
+    }
     
     public void drawKep(int x, int y, int[] pixelek, int szel, double sx,double sy){
         
@@ -103,7 +103,7 @@ public class Render {
     
     public void clear(){
         for (int i = 0; i < pixelek.length; i++) {
-            pixelek[i] = 0xffffffff;
+            pixelek[i] = 0xffaaaaaa;
         }
     }
 }

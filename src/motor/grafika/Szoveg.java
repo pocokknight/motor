@@ -51,9 +51,9 @@ public class Szoveg {
     }
     
     public int[] getBetu(char betu,int color){
-        int poz = (int)betu - 32;
-        System.out.println(betu+" - "+(int)betu);
-        if(poz<0 || poz>betuk.size()) poz=0;
+        int poz;
+        poz = (int)betu - 32;
+        if(poz<0 || poz>betuk.size()) poz=betuk.size()-1;
         int[] t = new int[betuk.size()];
         for (int i = 0; i < betuk.get(poz).size(); i++) {
             t[i] = betuk.get(poz).get(i);

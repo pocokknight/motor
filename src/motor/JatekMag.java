@@ -72,8 +72,6 @@ public class JatekMag implements Runnable{
                     fpsido--;
                     fps = framek;
                     framek = 0;
-                    
-                    System.out.println(fps);
                 }
             }
             
