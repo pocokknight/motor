@@ -38,25 +38,29 @@ public class Render {
         }
     }
     
-    public void drawSzoveg(Szoveg sz,String s,int szin,int x,int y){
+    /*public void drawSzoveg(Szoveg sz,String s,int szin,int x,int y){
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             int szel = sz.getBetuSzel(c);
             drawKep(x,y,sz.getBetu(c, szin),szel,sz.getBetuMag());
             x += (int)(szel);
         }
-    }
+    }*/
     
-    public void drawKep(int x, int y, int[] pixelek , int szel ,int mag){
+    public void drawKep(int x, int y, int[] pixelek, int szel, double sx,double sy){
+        
+        int mag = pixelek.length / szel;
+        int valszel = (int)(szel*sx);
+        int valmag = (int)(mag*sy);
         
         //nincs kirajzolás
-        if(x < -szel) return;
-        if(y < -mag) return;
+        if(x < -valszel) return;
+        if(y < -valmag) return;
         if(x >= kepernyoX) return;
         if(y >= kepernyoY) return;
         
         int ujx = 0,ujy = 0;
-        int ujszel = (int)(szel),ujmag = (int)(mag);
+        int ujszel = valszel,ujmag = valmag;
         
         //elvágott kód
         if(x < 0) ujx -= x;
@@ -66,8 +70,9 @@ public class Render {
         
         for (int i = ujx; i < ujszel; i++) {
             for (int j = ujy; j < ujmag; j++) {
-                int id = (int)(i+j*szel);
-                setPixel((int)(i+x),(int)(j+y),pixelek[id]);
+                try{
+                setPixel(i+x,j+y,pixelek[(int)(i/sx+(int)(j/sy)*szel)]);
+                }catch(Exception e){}
             }
         }
     }
@@ -98,7 +103,7 @@ public class Render {
     
     public void clear(){
         for (int i = 0; i < pixelek.length; i++) {
-            pixelek[i] = 0;
+            pixelek[i] = 0xffffffff;
         }
     }
 }

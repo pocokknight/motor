@@ -29,6 +29,7 @@ public class Ablak{
         vaszon = new Canvas();
         
         ablak = new JFrame(nev);
+        ablak.setUndecorated(true);
         ablak.getContentPane().add(vaszon);
         
         vaszon.setSize(kepernyoX,kepernyoY);
@@ -39,7 +40,6 @@ public class Ablak{
         ablak.setCursor(ablak.getToolkit().createCustomCursor(new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),"null"));
         
         ablak.setResizable(false);
-        //ablak.setUndecorated(true);
         ablak.setVisible(true);
         
         vaszon.createBufferStrategy(2);

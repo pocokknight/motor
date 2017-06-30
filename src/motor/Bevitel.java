@@ -88,14 +88,14 @@ public class Bevitel implements KeyListener,MouseListener,MouseMotionListener,Mo
     public void mouseDragged(MouseEvent me) {
         egerPozX = me.getX();
         egerPozY = me.getY();
-        System.out.println(egerPozX+" "+egerPozY);
+        //System.out.println(egerPozX+" "+egerPozY);
     }
 
     @Override
     public void mouseMoved(MouseEvent me) {
         egerPozX = me.getX();
         egerPozY = me.getY();
-        System.out.println(egerPozX+" "+egerPozY);
+        //System.out.println(egerPozX+" "+egerPozY);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class JatekIranyito extends AbsztraktJatek{
     @Override
     public void render(JatekMag jm, Render r) {
         
-        r.drawKep(jm.getBevitel().getEgerPozX(), jm.getBevitel().getEgerPozY(), cursor);
+        r.drawKep(jm.getBevitel().getEgerPozX(), jm.getBevitel().getEgerPozY(), cursor.getPixelek(),cursor.getSzel(),1,1);
     }
     
     public static void main(String args[]){
