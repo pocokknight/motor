@@ -38,6 +38,29 @@ public class Render {
         }
     }
     
+    public void drawRect(int x,int y,int w, int h, int szin){
+        //nincs kirajzolás
+        if(x < -w) return;
+        if(y < -h) return;
+        if(x >= kepernyoX) return;
+        if(y >= kepernyoY) return;
+        
+        int ujx = 0,ujy = 0;
+        int ujszel = w,ujmag = h;
+        
+        //elvágott kód
+        if(x < 0) ujx -= x;
+        if(y < 0) ujy -= y;
+        if(ujszel + x >= kepernyoX) ujszel -= ujszel+x-kepernyoX;
+        if(ujmag + y >= kepernyoY) ujmag -= ujmag+y-kepernyoY;
+        
+        for (int i = ujx; i < ujszel; i++) {
+            for (int j = ujy; j < ujmag; j++) {
+                setPixel(i+x,j+y,szin);
+            }
+        }
+    }
+    
     public void drawSzoveg(Szoveg sz,String s,int szin,int x,int y,double sx, double sy){
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
