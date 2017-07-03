@@ -5,7 +5,7 @@ import motor.fizika.Block;
 public class Fold extends Block{
     
     public Fold() {
-       super(1,0xff663300);
+       super(1,0xff663300,true,true,true,true);
     }
     
 }

@@ -1,11 +1,13 @@
 package jatek;
 
+import jatek.Karakterek.Player;
 import jatek.res.anim.AnimJelolo;
 import jatek.res.font.FontJelolo;
 import jatek.res.img.ImgJelolo;
 import motor.AbsztraktJatek;
 import motor.JatekMag;
 import motor.Render;
+import motor.fizika.Karakter;
 import motor.fizika.Vilag;
 import motor.grafika.*;
 
@@ -15,18 +17,21 @@ public class JatekIranyito extends AbsztraktJatek{
     BetoltottKep kep,cursor;
     Szoveg szoveg;
     Vilag alap;
+    Player jatekos;
     
     public JatekIranyito() {
         kep = new BetoltottKep(ImgJelolo.class, "teszt.png");
         cursor = new BetoltottKep(ImgJelolo.class, "cursor.png");
         szoveg = new Szoveg("char_table.png");
-        alap = new Vilag(25,100,50,false);
+        alap = new Vilag(15,100,50,false);
         alap.general();
+        jatekos = new Player(0, 15, 30, 0x99123456, 50, 50);
+        alap.addKarakter(jatekos);
     }
     
     @Override
     public void frissit(JatekMag jm, double dt) {
-        
+        alap.frissit(jm,dt);
     }
 
     @Override
