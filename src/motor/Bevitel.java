@@ -55,6 +55,8 @@ public class Bevitel implements KeyListener,MouseListener,MouseMotionListener,Mo
     @Override
     public void keyPressed(KeyEvent ke) {
         billentyuk[ke.getKeyCode()] = true;
+        //ideiglenes leállító
+        if(ke.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
     }
 
     @Override
