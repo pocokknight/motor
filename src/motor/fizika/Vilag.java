@@ -9,7 +9,7 @@ import motor.Render;
 
 public class Vilag {
 
-    private int camX = 0, camY = 0;
+    private double camX = 0, camY = 0;
     private int BLOCK_MERET;
     private Block[][] KOCKAK;
     private Vector<Karakter> KARAKTEREK = new Vector();
@@ -30,7 +30,7 @@ public class Vilag {
     public void general() {
         for (int i = 0; i < KOCKAK.length; i++) {
             for (int j = 0; j < KOCKAK[0].length; j++) {
-                if((i % 5 == 0 && (j == 9 || j == 10)) || (i == 10 && (j % 15 != 0 && j % 15 != 1)))
+                if((i % 5 == 0 && (j > 7 && j < 12)) || (i == 10 && (j % 15 != 0 && j % 15 != 1)) || (i == j))
                     KOCKAK[i][j] = new Fold();
                 else
                     KOCKAK[i][j] = new Levego();
@@ -41,26 +41,26 @@ public class Vilag {
     public void render(JatekMag jm, Render r) {
         for (int i = 0; i < KOCKAK.length; i++) {
             for (int j = 0; j < KOCKAK[0].length; j++) {
-                r.drawRect(BLOCK_MERET*i+camX,BLOCK_MERET*j+camY,BLOCK_MERET,BLOCK_MERET,KOCKAK[i][j].szin);
+                r.drawRect((int)(BLOCK_MERET*i-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,KOCKAK[i][j].szin);
             }
         }
         
         for (int i = 0; i < b.size(); i++) {
-            r.drawRect(BLOCK_MERET*b.get(i)[0]+camX,BLOCK_MERET*b.get(i)[1]+camY,BLOCK_MERET,BLOCK_MERET,0x99ff0000);
+            r.drawRect((int)(BLOCK_MERET*b.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*b.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x99ff0000);
         }
         for (int i = 0; i < j.size(); i++) {
-            r.drawRect(BLOCK_MERET*j.get(i)[0]+camX,BLOCK_MERET*j.get(i)[1]+camY,BLOCK_MERET,BLOCK_MERET,0x9900ff00);
+            r.drawRect((int)(BLOCK_MERET*j.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x9900ff00);
         }
         for (int i = 0; i < l.size(); i++) {
-            r.drawRect(BLOCK_MERET*l.get(i)[0]+camX,BLOCK_MERET*l.get(i)[1]+camY,BLOCK_MERET,BLOCK_MERET,0x9900ffff);
+            r.drawRect((int)(BLOCK_MERET*l.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*l.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x9900ffff);
         }
         for (int i = 0; i < f.size(); i++) {
-            r.drawRect(BLOCK_MERET*f.get(i)[0]+camX,BLOCK_MERET*f.get(i)[1]+camY,BLOCK_MERET,BLOCK_MERET,0x990000ff);
+            r.drawRect((int)(BLOCK_MERET*f.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*f.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x990000ff);
         }
         
         for (int i = 0; i < KARAKTEREK.size(); i++) {
             Karakter k = KARAKTEREK.get(i);
-            r.drawRect(Math.round((float)k.pozX), Math.round((float)k.pozY), k.szel, k.mag, k.szin);
+            r.drawRect((jm.getAblak().getSzel()-k.szel)/2, (jm.getAblak().getMag()-k.mag)/2, k.szel, k.mag, k.szin);
         }
     }
 
@@ -74,10 +74,28 @@ public class Vilag {
             k.frissit(this,jm,dt);
         }
     }
+    
+    
 
-    public int getCamX() { return camX; }
+    public void setCamX(double camX) {
+        this.camX = camX;
+    }
 
-    public int getCamY() { return camY; }
+    public void setCamY(double camY) {
+        this.camY = camY;
+    }
+
+    public void addCamX(double camX) {
+        this.camX += camX;
+    }
+
+    public void addCamY(double camY) {
+        this.camY += camY;
+    }
+
+    public double getCamX() { return camX; }
+
+    public double getCamY() { return camY; }
 
     public int getBLOCK_MERET() { return BLOCK_MERET; }
 

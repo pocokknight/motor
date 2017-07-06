@@ -25,7 +25,7 @@ public class JatekIranyito extends AbsztraktJatek{
         szoveg = new Szoveg("char_table.png");
         alap = new Vilag(15,100,50,false);
         alap.general();
-        jatekos = new Player(0, 10, 29, 0x99123456, 200, 50);
+        jatekos = new Player(0, 10, 28, 0x99123456, 0, 0);
         alap.addKarakter(jatekos);
     }
     
@@ -40,7 +40,7 @@ public class JatekIranyito extends AbsztraktJatek{
         alap.render(jm,r);
         //r.drawRect(0,0,25,25,0xff663300);
         r.drawSzoveg(szoveg,"FPS: "+jm.getFps(),0xffffffff,10,10,2,2);
-        r.drawSzoveg(szoveg,"Alpha build 0.1 (Press ESC to escape)",0xffffffff,600,10,2,2);
+        r.drawSzoveg(szoveg,"Alpha build 0.1.1 (Press ESC to escape)",0xffffffff,590,10,2,2);
         //r.drawSzoveg(szoveg,"qwertzuiopasdfghjklyxcvbnm-QWERTZUIOPASDFGHJKLYXCVBNM",0xff00ff00,20,420,2,2);
         r.drawKep(jm.getBevitel().getEgerPozX(), jm.getBevitel().getEgerPozY(), cursor.getPixelek(),cursor.getSzel(),1,1);
     }

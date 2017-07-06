@@ -57,11 +57,11 @@ public class Ablak{
         return kep;
     }
 
-    int getSzel() {
+    public int getSzel() {
         return kepernyoX;
     }
 
-    int getMag() {
+    public int getMag() {
         return kepernyoY;
     }
 
