@@ -48,8 +48,6 @@ public class Player extends Karakter{
     }
     private void utkozes(Vilag v,JatekMag jm, double dt) {
         
-        System.out.println(sebY);
-        
         double pX = (jm.getAblak().getSzel()-szel)/2;
         double pY = (jm.getAblak().getMag()-mag)/2;
         
