@@ -126,7 +126,7 @@ public class Render {
     
     public void clear(){
         for (int i = 0; i < pixelek.length; i++) {
-            pixelek[i] = 0xffaaaaaa;
+            pixelek[i] = 0xff000000;
         }
     }
 }

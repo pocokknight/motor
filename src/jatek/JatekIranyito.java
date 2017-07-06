@@ -7,6 +7,7 @@ import jatek.res.img.ImgJelolo;
 import motor.AbsztraktJatek;
 import motor.JatekMag;
 import motor.Render;
+import motor.fizika.Block;
 import motor.fizika.Karakter;
 import motor.fizika.Vilag;
 import motor.grafika.*;
@@ -40,7 +41,7 @@ public class JatekIranyito extends AbsztraktJatek{
         alap.render(jm,r);
         //r.drawRect(0,0,25,25,0xff663300);
         r.drawSzoveg(szoveg,"FPS: "+jm.getFps(),0xffffffff,10,10,2,2);
-        r.drawSzoveg(szoveg,"Alpha build 0.1.1 (Press ESC to escape)",0xffffffff,590,10,2,2);
+        r.drawSzoveg(szoveg,"Alpha build 0.1.2 (Press ESC to escape)",0xffffffff,590,10,2,2);
         //r.drawSzoveg(szoveg,"qwertzuiopasdfghjklyxcvbnm-QWERTZUIOPASDFGHJKLYXCVBNM",0xff00ff00,20,420,2,2);
         r.drawKep(jm.getBevitel().getEgerPozX(), jm.getBevitel().getEgerPozY(), cursor.getPixelek(),cursor.getSzel(),1,1);
     }

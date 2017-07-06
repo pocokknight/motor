@@ -2,7 +2,6 @@ package jatek.Karakterek;
 
 import com.sun.glass.events.KeyEvent;
 import motor.JatekMag;
-import motor.fizika.Block;
 import motor.fizika.Karakter;
 import motor.fizika.Vilag;
 
@@ -25,7 +24,7 @@ public class Player extends Karakter{
         
         if(jm.getBevitel().isBillLenyomva(KeyEvent.VK_SPACE)){
             if(ugrasok < ugrasokMax){
-                sebY -= v.getBLOCK_MERET()*40;
+                sebY = -v.getBLOCK_MERET()*40;
                 ugrasok++;
             }
         }

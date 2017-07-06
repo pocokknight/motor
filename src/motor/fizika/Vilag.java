@@ -12,6 +12,8 @@ public class Vilag {
     private double camX = 0, camY = 0;
     private int BLOCK_MERET;
     private Block[][] KOCKAK;
+    private int[][] FENY;
+    private Vector<FenyForras> FENY_FORRASOK = new Vector();
     private Vector<Karakter> KARAKTEREK = new Vector();
     public Vector<int[]> b = new Vector();
     public Vector<int[]> j = new Vector();
@@ -19,10 +21,12 @@ public class Vilag {
     public Vector<int[]> l = new Vector();
     private boolean REPEAT;
     private Block EDGE;
+    private int HATTERSZIN = 0xffaaaaaa;
     
     public Vilag(int blockMeret,int szel,int mag,boolean repeat) {
         BLOCK_MERET = blockMeret;
         KOCKAK = new Block[szel][mag];
+        FENY = new int[szel][mag];
         REPEAT = repeat;
         EDGE = new Edge();
     }
@@ -30,18 +34,22 @@ public class Vilag {
     public void general() {
         for (int i = 0; i < KOCKAK.length; i++) {
             for (int j = 0; j < KOCKAK[0].length; j++) {
+                FENY[i][j] = 0xff000000;
                 if((i % 5 == 0 && (j > 7 && j < 12)) || (i == 10 && (j % 15 != 0 && j % 15 != 1)) || (i == j))
                     KOCKAK[i][j] = new Fold();
                 else
                     KOCKAK[i][j] = new Levego();
             }
         }
+        FENY_FORRASOK.add(new FenyForras(0xffffffff, 15, 11, 11,this));
     }
 
     public void render(JatekMag jm, Render r) {
+        r.drawRect(0, 0, KOCKAK.length*BLOCK_MERET, KOCKAK[0].length*BLOCK_MERET, HATTERSZIN);
         for (int i = 0; i < KOCKAK.length; i++) {
             for (int j = 0; j < KOCKAK[0].length; j++) {
-                r.drawRect((int)(BLOCK_MERET*i-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,KOCKAK[i][j].szin);
+                if(FENY[i][j] != 0xff000000)
+                    r.drawRect((int)(BLOCK_MERET*i-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,KOCKAK[i][j].szin);
             }
         }
         
@@ -61,6 +69,12 @@ public class Vilag {
         for (int i = 0; i < KARAKTEREK.size(); i++) {
             Karakter k = KARAKTEREK.get(i);
             r.drawRect((jm.getAblak().getSzel()-k.szel)/2, (jm.getAblak().getMag()-k.mag)/2, k.szel, k.mag, k.szin);
+        }
+        
+        for (int i = 0; i < KOCKAK.length; i++) {
+            for (int j = 0; j < KOCKAK[0].length; j++) {
+                r.drawRect((int)(BLOCK_MERET*i-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,FENY[i][j]);
+            }
         }
     }
 
@@ -118,6 +132,14 @@ public class Vilag {
     public Vector<Karakter> getKARAKTEREK() { return KARAKTEREK; }
 
     public boolean isREPEAT() { return REPEAT; }
+
+    public int[][] getFENY() {
+        return FENY;
+    }
+
+    public Vector<FenyForras> getFENY_FORRASOK() {
+        return FENY_FORRASOK;
+    }
     
     
     
