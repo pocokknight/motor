@@ -9,13 +9,28 @@ public class Render {
     
     private int kepernyoX,kepernyoY;
     private int[] pixelek;
+    private int[] fenyterkep;
+    private int[] fenyblokk;
     
     Render(JatekMag jm){
         this.jm = jm;
         kepernyoX = jm.getSzel();
         kepernyoY = jm.getMag();
         pixelek = ((DataBufferInt)this.jm.getAblak().getKep().getRaster().getDataBuffer()).getData();
-        
+        fenyterkep = new int[pixelek.length];
+        fenyblokk = new int[pixelek.length];
+    }
+
+    public void fenyellenorzes() {
+        for (int i = 0; i < pixelek.length; i++) {
+            
+            float r = ((fenyterkep[i] >> 16) & 0xff) / 255f;
+            float g = ((fenyterkep[i] >> 8) & 0xff) / 255f;
+            float b = (fenyterkep[i] & 0xff) / 255f;
+            
+            pixelek[i] = ((int)(((pixelek[i] >> 16) & 0xff) *r) << 16 | (int)(((pixelek[i] >> 8) & 0xff) *g) << 8 | (int)((pixelek[i] & 0xff) *b));
+        }
+        fenyterkep = new int[pixelek.length];
     }
     
     public void setPixel(int x, int y, int ertek){
@@ -36,6 +51,23 @@ public class Render {
             
             pixelek[x+y*kepernyoX] = (255 << 24 | ujpiros << 16 | ujzold << 8 | ujkek);
         }
+    }
+    
+    public void setFenyTerkep(int x, int y, int szin){
+        //nincs kirajzolás
+        if(x < 0) return;
+        if(y < 0) return;
+        if(x >= kepernyoX) return;
+        if(y >= kepernyoY) return;
+        
+        int alapszin = fenyterkep[x + y * kepernyoX];
+        
+        int piros = Math.max((alapszin >> 16) & 0xff, (szin >> 16) & 0xff);
+        int zold = Math.max((alapszin >> 8) & 0xff, (szin >> 8) & 0xff);
+        int kek = Math.max(alapszin & 0xff, szin & 0xff);
+        
+        fenyterkep[x + y * kepernyoX] = (piros << 16 | zold << 8 | kek);
+        
     }
     
     public void drawRect(int x,int y,int w, int h, int szin){
@@ -126,7 +158,7 @@ public class Render {
     
     public void clear(){
         for (int i = 0; i < pixelek.length; i++) {
-            pixelek[i] = 0xff000000;
+            pixelek[i] = 0xff999999;
         }
     }
 }

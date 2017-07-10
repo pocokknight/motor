@@ -37,8 +37,32 @@ public class JatekIranyito extends AbsztraktJatek{
 
     @Override
     public void render(JatekMag jm, Render r) {
-        
         alap.render(jm,r);
+        for (int i = 0; i < 100; i++) {
+            for (int j = 0; j < 100; j++) {
+                r.setFenyTerkep(i+jm.getBevitel().getEgerPozX(), j+jm.getBevitel().getEgerPozY(), 0x00ffffff);
+            }
+        }
+        for (int i = 150; i < 250; i++) {
+            for (int j = 100; j < 200; j++) {
+                r.setFenyTerkep(i, j, 0x00ff0000);
+            }
+        }
+        for (int i = 100; i < 200; i++) {
+            for (int j = 100; j < 200; j++) {
+                r.setFenyTerkep(i, j, 0x0000ff00);
+            }
+        }
+        for (int i = 125; i < 225; i++) {
+            for (int j = 150; j < 250; j++) {
+                r.setFenyTerkep(i, j, 0x000000ff);
+            }
+        }
+        
+        //erre a felére hatnak a fényefektek ^^^^
+        r.fenyellenorzes();
+        //erre a felére nem VVVV
+        
         //r.drawRect(0,0,25,25,0xff663300);
         r.drawSzoveg(szoveg,"FPS: "+jm.getFps(),0xffffffff,10,10,2,2);
         r.drawSzoveg(szoveg,"Alpha build 0.1.2 (Press ESC to escape)",0xffffffff,590,10,2,2);
