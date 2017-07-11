@@ -1,6 +1,7 @@
 package motor;
 
 import java.awt.image.*;
+import motor.fizika.FenyForras;
 import motor.grafika.*;
 
 public class Render {
@@ -30,7 +31,6 @@ public class Render {
             
             pixelek[i] = ((int)(((pixelek[i] >> 16) & 0xff) *r) << 16 | (int)(((pixelek[i] >> 8) & 0xff) *g) << 8 | (int)((pixelek[i] & 0xff) *b));
         }
-        fenyterkep = new int[pixelek.length];
     }
     
     public void setPixel(int x, int y, int ertek){
@@ -62,12 +62,12 @@ public class Render {
         
         int alapszin = fenyterkep[x + y * kepernyoX];
         
+        int alpha = Math.max((alapszin >> 24) & 0xff, (szin >> 24) & 0xff);
         int piros = Math.max((alapszin >> 16) & 0xff, (szin >> 16) & 0xff);
         int zold = Math.max((alapszin >> 8) & 0xff, (szin >> 8) & 0xff);
         int kek = Math.max(alapszin & 0xff, szin & 0xff);
         
-        fenyterkep[x + y * kepernyoX] = (piros << 16 | zold << 8 | kek);
-        
+        fenyterkep[x + y * kepernyoX] = (alpha << 24 | piros << 16 | zold << 8 | kek);
     }
     
     public void drawRect(int x,int y,int w, int h, int szin){
@@ -159,6 +159,19 @@ public class Render {
     public void clear(){
         for (int i = 0; i < pixelek.length; i++) {
             pixelek[i] = 0xff999999;
+        }
+        fenyterkep = new int[pixelek.length];
+    }
+
+    public void addFeny(FenyForras f, int X, int Y) {
+        int x = 0,y = 0;
+        for (int i = 0; i < f.getPixelek().length; i++) {
+            if(i % f.getD() == 0){
+                y++;
+                x = 0;
+            }
+            setFenyTerkep(x + X - f.getR(),y + Y - f.getR(), f.getPixelek()[i]);
+            x++;
         }
     }
 }

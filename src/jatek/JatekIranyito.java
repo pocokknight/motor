@@ -8,6 +8,7 @@ import motor.AbsztraktJatek;
 import motor.JatekMag;
 import motor.Render;
 import motor.fizika.Block;
+import motor.fizika.FenyForras;
 import motor.fizika.Karakter;
 import motor.fizika.Vilag;
 import motor.grafika.*;
@@ -38,26 +39,6 @@ public class JatekIranyito extends AbsztraktJatek{
     @Override
     public void render(JatekMag jm, Render r) {
         alap.render(jm,r);
-        for (int i = 0; i < 100; i++) {
-            for (int j = 0; j < 100; j++) {
-                r.setFenyTerkep(i+jm.getBevitel().getEgerPozX(), j+jm.getBevitel().getEgerPozY(), 0x00ffffff);
-            }
-        }
-        for (int i = 150; i < 250; i++) {
-            for (int j = 100; j < 200; j++) {
-                r.setFenyTerkep(i, j, 0x00ff0000);
-            }
-        }
-        for (int i = 100; i < 200; i++) {
-            for (int j = 100; j < 200; j++) {
-                r.setFenyTerkep(i, j, 0x0000ff00);
-            }
-        }
-        for (int i = 125; i < 225; i++) {
-            for (int j = 150; j < 250; j++) {
-                r.setFenyTerkep(i, j, 0x000000ff);
-            }
-        }
         
         //erre a felére hatnak a fényefektek ^^^^
         r.fenyellenorzes();

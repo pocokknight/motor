@@ -19,12 +19,18 @@ public class Vilag {
     public Vector<int[]> l = new Vector();
     private boolean REPEAT;
     private Block EDGE;
+    private FenyForras KAR_FENY;
+    private FenyForras TESZT_FENY;
+    private FenyForras TESZT_FENY2;
     
     public Vilag(int blockMeret,int szel,int mag,boolean repeat) {
         BLOCK_MERET = blockMeret;
         KOCKAK = new Block[szel][mag];
         REPEAT = repeat;
         EDGE = new Edge();
+        KAR_FENY = new FenyForras(150, 255, 0xaaaaff);
+        TESZT_FENY = new FenyForras(100, 255, 0xffffaa);
+        TESZT_FENY2 = new FenyForras(200, 255, 0xaaffff);
     }
 
     public void general() {
@@ -62,6 +68,16 @@ public class Vilag {
             Karakter k = KARAKTEREK.get(i);
             r.drawRect((jm.getAblak().getSzel()-k.szel)/2, (jm.getAblak().getMag()-k.mag)/2, k.szel, k.mag, k.szin);
         }
+        
+        r.addFeny(KAR_FENY,jm.getAblak().getSzel()/2,jm.getAblak().getMag()/2);
+        r.addFeny(TESZT_FENY,(int)(200-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
+        r.addFeny(TESZT_FENY,(int)(250-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
+        r.addFeny(TESZT_FENY,(int)(300-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
+        r.addFeny(TESZT_FENY,(int)(350-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
+        r.addFeny(TESZT_FENY,(int)(400-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
+        r.addFeny(TESZT_FENY,(int)(450-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
+        r.addFeny(TESZT_FENY2,(int)(600-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
+        
     }
 
     public void addKarakter(Karakter k) {
