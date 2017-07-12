@@ -9,7 +9,6 @@ import motor.Render;
 
 public class Vilag {
 
-    private double camX = 0, camY = 0;
     private int BLOCK_MERET;
     private Block[][] KOCKAK;
     private Vector<Karakter> KARAKTEREK = new Vector();
@@ -28,7 +27,7 @@ public class Vilag {
         KOCKAK = new Block[szel][mag];
         REPEAT = repeat;
         EDGE = new Edge();
-        KAR_FENY = new FenyForras(150, 255, 0xaaaaff);
+        KAR_FENY = new FenyForras(200, 150, 0xaaaaff);
         TESZT_FENY = new FenyForras(100, 255, 0xffffaa);
         TESZT_FENY2 = new FenyForras(200, 255, 0xaaffff);
     }
@@ -36,7 +35,7 @@ public class Vilag {
     public void general() {
         for (int i = 0; i < KOCKAK.length; i++) {
             for (int j = 0; j < KOCKAK[0].length; j++) {
-                if((i % 5 == 0 && (j > 7 && j < 12)) || (i == 10 && (j % 15 != 0 && j % 15 != 1)) || (i == j))
+                if((i % 5 == 0 && (j > 7 && j < 12)) || (i == 10 && (j % 15 != 0 && j % 15 != 1)) || (i == j) || (i+1 == j))
                     KOCKAK[i][j] = new Fold();
                 else
                     KOCKAK[i][j] = new Levego();
@@ -47,36 +46,30 @@ public class Vilag {
     public void render(JatekMag jm, Render r) {
         for (int i = 0; i < KOCKAK.length; i++) {
             for (int j = 0; j < KOCKAK[0].length; j++) {
-                r.drawRect((int)(BLOCK_MERET*i-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,KOCKAK[i][j].szin);
+                r.drawRect((int)(BLOCK_MERET*i-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,KOCKAK[i][j].szin,KOCKAK[i][j].getAtl());
             }
         }
         
         for (int i = 0; i < b.size(); i++) {
-            r.drawRect((int)(BLOCK_MERET*b.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*b.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x99ff0000);
+            r.drawRect((int)(BLOCK_MERET*b.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*b.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x99ff0000,0);
         }
         for (int i = 0; i < j.size(); i++) {
-            r.drawRect((int)(BLOCK_MERET*j.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x9900ff00);
+            r.drawRect((int)(BLOCK_MERET*j.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x9900ff00,0);
         }
         for (int i = 0; i < l.size(); i++) {
-            r.drawRect((int)(BLOCK_MERET*l.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*l.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x9900ffff);
+            r.drawRect((int)(BLOCK_MERET*l.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*l.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x9900ffff,0);
         }
         for (int i = 0; i < f.size(); i++) {
-            r.drawRect((int)(BLOCK_MERET*f.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*f.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x990000ff);
+            r.drawRect((int)(BLOCK_MERET*f.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*f.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x990000ff,0);
         }
         
         for (int i = 0; i < KARAKTEREK.size(); i++) {
             Karakter k = KARAKTEREK.get(i);
-            r.drawRect((jm.getAblak().getSzel()-k.szel)/2, (jm.getAblak().getMag()-k.mag)/2, k.szel, k.mag, k.szin);
+            r.drawRect((jm.getAblak().getSzel()-k.szel)/2, (jm.getAblak().getMag()-k.mag)/2, k.szel, k.mag, k.szin,0);
         }
         
-        r.addFeny(KAR_FENY,jm.getAblak().getSzel()/2,jm.getAblak().getMag()/2);
-        r.addFeny(TESZT_FENY,(int)(200-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
-        r.addFeny(TESZT_FENY,(int)(250-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
-        r.addFeny(TESZT_FENY,(int)(300-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
-        r.addFeny(TESZT_FENY,(int)(350-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
-        r.addFeny(TESZT_FENY,(int)(400-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
-        r.addFeny(TESZT_FENY,(int)(450-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
-        r.addFeny(TESZT_FENY2,(int)(600-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
+        r.addFeny(this,KAR_FENY,jm.getAblak().getSzel()/2,jm.getAblak().getMag()/2-KARAKTEREK.get(0).mag/2-1);
+        r.addFeny(this,TESZT_FENY,(int)(200-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
         
     }
 
@@ -90,28 +83,6 @@ public class Vilag {
             k.frissit(this,jm,dt);
         }
     }
-    
-    
-
-    public void setCamX(double camX) {
-        this.camX = camX;
-    }
-
-    public void setCamY(double camY) {
-        this.camY = camY;
-    }
-
-    public void addCamX(double camX) {
-        this.camX += camX;
-    }
-
-    public void addCamY(double camY) {
-        this.camY += camY;
-    }
-
-    public double getCamX() { return camX; }
-
-    public double getCamY() { return camY; }
 
     public int getBLOCK_MERET() { return BLOCK_MERET; }
 
@@ -135,6 +106,7 @@ public class Vilag {
 
     public boolean isREPEAT() { return REPEAT; }
     
-    
+    public double getCamX(){ return KARAKTEREK.get(0).pozX; }
+    public double getCamY(){ return KARAKTEREK.get(0).pozY; }
     
 }

@@ -2,6 +2,7 @@ package motor;
 
 import java.awt.image.*;
 import motor.fizika.FenyForras;
+import motor.fizika.Vilag;
 import motor.grafika.*;
 
 public class Render {
@@ -23,17 +24,35 @@ public class Render {
     }
 
     public void fenyellenorzes() {
+        
         for (int i = 0; i < pixelek.length; i++) {
             
-            float r = ((fenyterkep[i] >> 16) & 0xff) / 255f;
-            float g = ((fenyterkep[i] >> 8) & 0xff) / 255f;
-            float b = (fenyterkep[i] & 0xff) / 255f;
-            
-            pixelek[i] = ((int)(((pixelek[i] >> 16) & 0xff) *r) << 16 | (int)(((pixelek[i] >> 8) & 0xff) *g) << 8 | (int)((pixelek[i] & 0xff) *b));
+            if(fenyterkep[i] == FenyForras.ALAPSOTET){
+                pixelek[i] = 0x111111;
+            }else{
+
+                float r = ((fenyterkep[i] >> 16) & 0xff) / 255f;
+                float g = ((fenyterkep[i] >> 8) & 0xff) / 255f;
+                float b = (fenyterkep[i] & 0xff) / 255f;
+
+
+                pixelek[i] = ((int)(((pixelek[i] >> 16) & 0xff) *r) << 16 | (int)(((pixelek[i] >> 8) & 0xff) *g) << 8 | (int)((pixelek[i] & 0xff) *b));
+            }
         }
     }
     
-    public void setPixel(int x, int y, int ertek){
+    public void clear(){
+        fenyblokk = new int[pixelek.length];
+        fenyterkep = new int[pixelek.length];
+        for (int i = 0; i < pixelek.length; i++) {
+            pixelek[i] = 0xff999999;
+            fenyblokk[i] = FenyForras.URES;
+            fenyterkep[i] = FenyForras.ALAPSOTET;
+        }
+        
+    }
+    
+    public void setPixel(int x, int y, int ertek, int atlathatosag){
         
         int alpha = ((ertek >> 24) & 0xff);
         
@@ -41,7 +60,8 @@ public class Render {
             return;
         }
         if(alpha == 255){
-            pixelek[x+y*kepernyoX] = ertek;    
+            pixelek[x+y*kepernyoX] = ertek;  
+            fenyblokk[x+y*kepernyoX] = atlathatosag > fenyblokk[x+y*kepernyoX] ? atlathatosag : fenyblokk[x+y*kepernyoX];
         }else{
             int pixelszin = pixelek[x+y*kepernyoX];
             
@@ -50,6 +70,7 @@ public class Render {
             int ujkek   = ( pixelszin & 0xff) - (int)(((pixelszin & 0xff) - (ertek & 0xff)) * (alpha / 255f));
             
             pixelek[x+y*kepernyoX] = (255 << 24 | ujpiros << 16 | ujzold << 8 | ujkek);
+            fenyblokk[x+y*kepernyoX] = atlathatosag > fenyblokk[x+y*kepernyoX] ? atlathatosag : fenyblokk[x+y*kepernyoX];
         }
     }
     
@@ -70,7 +91,7 @@ public class Render {
         fenyterkep[x + y * kepernyoX] = (alpha << 24 | piros << 16 | zold << 8 | kek);
     }
     
-    public void drawRect(int x,int y,int w, int h, int szin){
+    public void drawRect(int x,int y,int w, int h, int szin, int athatolhatosag){
         //nincs kirajzolás
         if(x < -w) return;
         if(y < -h) return;
@@ -88,7 +109,7 @@ public class Render {
         
         for (int i = ujx; i < ujszel; i++) {
             for (int j = ujy; j < ujmag; j++) {
-                setPixel(i+x,j+y,szin);
+                setPixel(i+x,j+y,szin,athatolhatosag);
             }
         }
     }
@@ -126,7 +147,7 @@ public class Render {
         for (int i = ujx; i < ujszel; i++) {
             for (int j = ujy; j < ujmag; j++) {
                 try{
-                setPixel(i+x,j+y,pixelek[(int)(i/sx+(int)(j/sy)*szel)]);
+                    setPixel(i+x,j+y,pixelek[(int)(i/sx+(int)(j/sy)*szel)],0);
                 }catch(Exception e){}
             }
         }
@@ -151,27 +172,68 @@ public class Render {
         
         for (int i = ujx; i < ujszel; i++) {
             for (int j = ujy; j < ujmag; j++) {
-                setPixel(i+x,j+y,kep.getPixelek()[i+j*kep.getSzel()]);
+                setPixel(i+x,j+y,kep.getPixelek()[i+j*kep.getSzel()],0);
             }
+        }
+    }
+
+    public void addFeny(Vilag v,FenyForras f, int X, int Y) {
+        if(!(X+f.getR() < 0 || X-f.getR() > kepernyoX || Y+f.getR() < 0 || Y-f.getR() > kepernyoY))
+        for (int i = 0; i <= f.getD(); i++) {
+            vonalFeny(v, f, f.getR(), f.getR(), i, 0, X, Y);
+            vonalFeny(v, f, f.getR(), f.getR(), i, f.getD(), X, Y);
+            vonalFeny(v, f, f.getR(), f.getR(), 0, i, X, Y);
+            vonalFeny(v, f, f.getR(), f.getR(), f.getD(), i, X, Y);
         }
     }
     
-    public void clear(){
-        for (int i = 0; i < pixelek.length; i++) {
-            pixelek[i] = 0xff999999;
-        }
-        fenyterkep = new int[pixelek.length];
-    }
-
-    public void addFeny(FenyForras f, int X, int Y) {
-        int x = 0,y = 0;
-        for (int i = 0; i < f.getPixelek().length; i++) {
-            if(i % f.getD() == 0){
-                y++;
-                x = 0;
+    private void vonalFeny(Vilag v,FenyForras f,int x0,int y0,int x1,int y1,int X, int Y){
+        
+        int dx = Math.abs(x0-x1);
+        int dy = Math.abs(y0-y1);
+        
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        
+        int e2,err = dx - dy;
+            
+        boolean voltTeli = false;
+        int szamlalo = 0;
+        
+        while(true){
+            
+            int kepX = x0 - f.getR() + X;
+            int kepY = y0 - f.getR() + Y;
+            
+            int szin = f.getSzinErtek(x0,y0);
+            if(szin == 0) return;
+            
+            int poz = kepX + kepY * kepernyoX;
+            if(poz >= 0){
+                if(voltTeli){
+                    szamlalo++;
+                    if(szamlalo > v.getBLOCK_MERET()-1) return;
+                }else
+                if(fenyblokk[poz] == FenyForras.TELI){
+                    voltTeli = true;
+                }
             }
-            setFenyTerkep(x + X - f.getR(),y + Y - f.getR(), f.getPixelek()[i]);
-            x++;
+            
+            setFenyTerkep(kepX, kepY, szin);
+            
+            if(x0 == x1 && y0 == y1) break;
+            
+            e2 = 2*err;
+            
+            if(e2 > -1 * dy){
+                err -= dy;
+                x0 += sx;
+            }
+            
+            if(e2 < dx){
+                err += dx;
+                y0 += sy;
+            }
         }
     }
 }

@@ -6,6 +6,9 @@ public class FenyForras {
     private int ero;
     private int[] pixelek;
 
+    public static final int TELI = 1, URES = 0;
+    public static final int ALAPSOTET = 0xff222222;
+    
     public FenyForras(int r, int ero, int szin) {
         this.r = r;
         this.d = 2*r;
@@ -34,7 +37,7 @@ public class FenyForras {
             }
         }
     }
-
+    
     public int getR() {
         return r;
     }
@@ -53,6 +56,14 @@ public class FenyForras {
 
     public int[] getPixelek() {
         return pixelek;
+    }
+
+    public int getSzinErtek(int x0, int y0) {
+        int i = x0 + y0 * d;
+        if(i >= 0 && i < pixelek.length)
+            return pixelek[x0 + y0 * d];
+        else
+            return 0;
     }
  
     
