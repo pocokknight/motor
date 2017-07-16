@@ -2,13 +2,17 @@ package jatek.Karakterek;
 
 import com.sun.glass.events.KeyEvent;
 import motor.JatekMag;
+import motor.Render;
+import motor.fizika.Eszkoz;
 import motor.fizika.Karakter;
 import motor.fizika.Vilag;
+import motor.grafika.ForgathatoKep;
 
 public class Player extends Karakter{
     
     static double ALAP_MAX_SEB = 150; 
     
+    private Eszkoz eszkoz;
     private int ugrasok = 0;
     private int ugrasokMax = 1;
     
@@ -16,8 +20,9 @@ public class Player extends Karakter{
         super(id, szel, mag, szin, pozX, pozY,ALAP_MAX_SEB);
     }
     
-    @Override
-    public void frissit(Vilag v,JatekMag jm, double dt) {
+    public void frissit(Vilag v,JatekMag jm, double dt,boolean UT) {
+        
+        eszkoz.frissit(v,jm,dt,UT);
         
         sebY+=15;
         if(sebY < 1 && sebY > -1) sebY = 0;
@@ -42,7 +47,7 @@ public class Player extends Karakter{
         }
         
         utkozes(v,jm,dt);
-        utkozesTeszt(v,jm,dt);
+        if(jm.getRender().isColl())utkozesTeszt(v,jm,dt);
         
     }
     private void utkozes(Vilag v,JatekMag jm, double dt) {
@@ -165,77 +170,19 @@ public class Player extends Karakter{
         (int)Math.ceil((pozY+mag)/v.getBLOCK_MERET())
         */
     }
-    
-    /*
-        //vizszintes ütközes
-        if(sebX != 0){
-            if(sebX > 0){//jobbra halad
-                for (int i = (int)Math.floor(pozY/v.getBLOCK_MERET()); i < (int)Math.ceil((pozY+mag)/v.getBLOCK_MERET()); i++) {
-                    Block b = v.getKOCKA((int)Math.ceil((pozX+szel)/v.getBLOCK_MERET()),i);
-                    if(b.isSzilardBall()){
-                        int[] t = {(int)Math.ceil((pozX+szel)/v.getBLOCK_MERET()),i};
-                        v.b.add(t);
-                        double tav = (Math.ceil((pozX+szel)/v.getBLOCK_MERET())*v.getBLOCK_MERET()) - (pozX+szel);
-                    }else{
-                        pozX += sebX*dt;
-                    }
-                }
-            }else if(sebX < 0){//ballra halad
-                for (int i = (int)Math.floor(pozY/v.getBLOCK_MERET()); i < (int)Math.ceil((pozY+mag)/v.getBLOCK_MERET()); i++) {
-                    Block b = v.getKOCKA((int)Math.floor(pozX/v.getBLOCK_MERET()),i);
-                    if(b.isSzilardJobb()){
-                        int[] t = {(int)Math.floor(pozX/v.getBLOCK_MERET()),i};
-                        v.b.add(t);
-                        double tav = (pozX) - (Math.floor(pozX/v.getBLOCK_MERET())*v.getBLOCK_MERET()+v.getBLOCK_MERET());
-                        if(sebX*dt > tav){
-                            pozX += sebX*dt;
-                            System.out.println(pozX+" "+tav+" "+sebX*dt);
-                        }else{
-                            System.out.println("MOST "+pozX+" "+tav+" "+sebX*dt);
-                            pozX += tav;
-                        }
-                    }else{
-                        pozX += sebX*dt;
-                    }
-                }
-            }
-        }
-            //függöleges ütközés
-        if(sebY != 0){
-            if(sebY > 0){//lefele halad
-                for (int i = (int)Math.floor(pozX/v.getBLOCK_MERET()); i < (int)Math.ceil((pozX+szel)/v.getBLOCK_MERET()); i++) {
-                    Block b = v.getKOCKA(i,(int)Math.ceil((pozY+mag)/v.getBLOCK_MERET()));
-                    if(b.isSzilardFent()){
-                        int[] t = {i,(int)Math.ceil((pozY+mag)/v.getBLOCK_MERET())};
-                        v.b.add(t);
-                        double tav = (Math.ceil((pozY+mag)/v.getBLOCK_MERET())*v.getBLOCK_MERET()) - (pozY+mag);
-                        if(sebY*dt < tav){
-                            pozY += sebY*dt;
-                        }else{
-                            pozY += tav;
-                        }
-                    }else{
-                        pozY += sebY*dt;
-                    }
+    public void setEszkoz(Eszkoz f){
+        eszkoz = f;
+    }
+    public Eszkoz getEszkoz() {
+        return eszkoz;
+    }
 
-                }
-            }else if(sebY < 0){//felfele halad
-                for (int i = (int)Math.floor(pozX/v.getBLOCK_MERET()); i < (int)Math.ceil((pozX+szel)/v.getBLOCK_MERET()); i++) {
-                    Block b = v.getKOCKA(i,(int)Math.floor(pozY/v.getBLOCK_MERET()));
-                    if(b.isSzilardLent()){
-                        int[] t = {i,(int)Math.floor(pozY/v.getBLOCK_MERET())};
-                        v.b.add(t);
-                        double tav = (pozY) - (Math.floor(pozY/v.getBLOCK_MERET())*v.getBLOCK_MERET()+v.getBLOCK_MERET());
-                        if(sebY*dt < tav){
-                            pozY += sebY*dt;
-                        }else{
-                            pozY -= tav;
-                        }
-                    }else{
-                        pozY += sebY*dt;
-                    }
-                }
-            }
-        }*/
+    public void render(JatekMag jm, Render r,boolean ut) {
+        r.drawRect(
+                (jm.getAblak().getSzel()-szel)/2, 
+                (jm.getAblak().getMag()-mag)/2, 
+                szel, mag, szin,0);
+        if(ut) eszkoz.render(jm,r);
+    }
 
 }

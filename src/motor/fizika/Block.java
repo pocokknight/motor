@@ -6,14 +6,14 @@ public class Block {
     protected boolean szilardLent,szilardFent,szilardJobb,szilardBall;
     protected int athatolhatosag;
 
-    public Block(int id, int szin, boolean szilardLent, boolean szilardFent, boolean szilardJobb, boolean szilardBall) {
+    public Block(int id, int szin, boolean szilardLent, boolean szilardFent, boolean szilardJobb, boolean szilardBall, int athatolhatosag) {
         this.id = id;
         this.szin = szin;
         this.szilardLent = szilardLent;
         this.szilardFent = szilardFent;
         this.szilardJobb = szilardJobb;
         this.szilardBall = szilardBall;
-        this.athatolhatosag = FenyForras.TELI;
+        this.athatolhatosag = athatolhatosag;
     }
 
     public int getId() {

@@ -7,6 +7,7 @@ import motor.grafika.*;
 
 public class Render {
 
+    private Forgato f;
     private JatekMag jm;
     
     private int kepernyoX,kepernyoY;
@@ -14,8 +15,13 @@ public class Render {
     private int[] fenyterkep;
     private int[] fenyblokk;
     
+    private boolean help = false;
+    private boolean feny = false;
+    private boolean coll = false;
+    
     Render(JatekMag jm){
         this.jm = jm;
+        f = new Forgato();
         kepernyoX = jm.getSzel();
         kepernyoY = jm.getMag();
         pixelek = ((DataBufferInt)this.jm.getAblak().getKep().getRaster().getDataBuffer()).getData();
@@ -25,6 +31,7 @@ public class Render {
 
     public void fenyellenorzes() {
         
+        if(feny)
         for (int i = 0; i < pixelek.length; i++) {
             
             if(fenyterkep[i] == FenyForras.ALAPSOTET){
@@ -75,20 +82,22 @@ public class Render {
     }
     
     public void setFenyTerkep(int x, int y, int szin){
-        //nincs kirajzolás
-        if(x < 0) return;
-        if(y < 0) return;
-        if(x >= kepernyoX) return;
-        if(y >= kepernyoY) return;
-        
-        int alapszin = fenyterkep[x + y * kepernyoX];
-        
-        int alpha = Math.max((alapszin >> 24) & 0xff, (szin >> 24) & 0xff);
-        int piros = Math.max((alapszin >> 16) & 0xff, (szin >> 16) & 0xff);
-        int zold = Math.max((alapszin >> 8) & 0xff, (szin >> 8) & 0xff);
-        int kek = Math.max(alapszin & 0xff, szin & 0xff);
-        
-        fenyterkep[x + y * kepernyoX] = (alpha << 24 | piros << 16 | zold << 8 | kek);
+        if(feny){
+            //nincs kirajzolás
+            if(x < 0) return;
+            if(y < 0) return;
+            if(x >= kepernyoX) return;
+            if(y >= kepernyoY) return;
+
+            int alapszin = fenyterkep[x + y * kepernyoX];
+
+            int alpha = Math.max((alapszin >> 24) & 0xff, (szin >> 24) & 0xff);
+            int piros = Math.max((alapszin >> 16) & 0xff, (szin >> 16) & 0xff);
+            int zold = Math.max((alapszin >> 8) & 0xff, (szin >> 8) & 0xff);
+            int kek = Math.max(alapszin & 0xff, szin & 0xff);
+
+            fenyterkep[x + y * kepernyoX] = (alpha << 24 | piros << 16 | zold << 8 | kek);
+        }
     }
     
     public void drawRect(int x,int y,int w, int h, int szin, int athatolhatosag){
@@ -123,9 +132,43 @@ public class Render {
         }
     }
     
+    public void drawKep(int x, int y, int[] pixelek, int szel, double sx,double sy,double fok){
+        
+        int mag = pixelek.length / szel;
+        
+        pixelek = f.forgat(pixelek, szel, mag, fok);
+        
+        int valszel = (int)(szel*sx);
+        int valmag = (int)(mag*sy);
+        
+        //nincs kirajzolás
+        if(x < -valszel) return;
+        if(y < -valmag) return;
+        if(x >= kepernyoX) return;
+        if(y >= kepernyoY) return;
+        
+        int ujx = 0,ujy = 0;
+        int ujszel = valszel,ujmag = valmag;
+        
+        //elvágott kód
+        if(x < 0) ujx -= x;
+        if(y < 0) ujy -= y;
+        if(ujszel + x >= kepernyoX) ujszel -= ujszel+x-kepernyoX;
+        if(ujmag + y >= kepernyoY) ujmag -= ujmag+y-kepernyoY;
+        
+        for (int i = ujx; i < ujszel; i++) {
+            for (int j = ujy; j < ujmag; j++) {
+                try{
+                    setPixel(i+x,j+y,pixelek[(int)(i/sx+(int)(j/sy)*szel)],0);
+                }catch(Exception e){}
+            }
+        }
+    }
+    
     public void drawKep(int x, int y, int[] pixelek, int szel, double sx,double sy){
         
         int mag = pixelek.length / szel;
+        
         int valszel = (int)(szel*sx);
         int valmag = (int)(mag*sy);
         
@@ -178,62 +221,94 @@ public class Render {
     }
 
     public void addFeny(Vilag v,FenyForras f, int X, int Y) {
-        if(!(X+f.getR() < 0 || X-f.getR() > kepernyoX || Y+f.getR() < 0 || Y-f.getR() > kepernyoY))
-        for (int i = 0; i <= f.getD(); i++) {
-            vonalFeny(v, f, f.getR(), f.getR(), i, 0, X, Y);
-            vonalFeny(v, f, f.getR(), f.getR(), i, f.getD(), X, Y);
-            vonalFeny(v, f, f.getR(), f.getR(), 0, i, X, Y);
-            vonalFeny(v, f, f.getR(), f.getR(), f.getD(), i, X, Y);
+        if(feny){
+            if(!(X+f.getR() < 0 || X-f.getR() > kepernyoX || Y+f.getR() < 0 || Y-f.getR() > kepernyoY))
+            for (int i = 0; i <= f.getD(); i++) {
+                vonalFeny(v, f, f.getR(), f.getR(), i, 0, X, Y);
+                vonalFeny(v, f, f.getR(), f.getR(), i, f.getD(), X, Y);
+                vonalFeny(v, f, f.getR(), f.getR(), 0, i, X, Y);
+                vonalFeny(v, f, f.getR(), f.getR(), f.getD(), i, X, Y);
+            }
         }
     }
     
     private void vonalFeny(Vilag v,FenyForras f,int x0,int y0,int x1,int y1,int X, int Y){
         
-        int dx = Math.abs(x0-x1);
-        int dy = Math.abs(y0-y1);
-        
-        int sx = x0 < x1 ? 1 : -1;
-        int sy = y0 < y1 ? 1 : -1;
-        
-        int e2,err = dx - dy;
-            
-        boolean voltTeli = false;
-        int szamlalo = 0;
-        
-        while(true){
-            
-            int kepX = x0 - f.getR() + X;
-            int kepY = y0 - f.getR() + Y;
-            
-            int szin = f.getSzinErtek(x0,y0);
-            if(szin == 0) return;
-            
-            int poz = kepX + kepY * kepernyoX;
-            if(poz >= 0){
-                if(voltTeli){
-                    szamlalo++;
-                    if(szamlalo > v.getBLOCK_MERET()-1) return;
-                }else
-                if(fenyblokk[poz] == FenyForras.TELI){
-                    voltTeli = true;
+        if(feny){
+
+            int dx = Math.abs(x0-x1);
+            int dy = Math.abs(y0-y1);
+
+            int sx = x0 < x1 ? 1 : -1;
+            int sy = y0 < y1 ? 1 : -1;
+
+            int e2,err = dx - dy;
+
+            boolean voltTeli = false;
+            int szamlalo = 0;
+
+            while(true){
+
+                int kepX = x0 - f.getR() + X;
+                int kepY = y0 - f.getR() + Y;
+
+                int szin = f.getSzinErtek(x0,y0);
+                if(szin == 0) return;
+
+                int poz = kepX + kepY * kepernyoX;
+                if(poz >= 0){
+                    if(voltTeli){
+                        szamlalo++;
+                        if(szamlalo > v.getBLOCK_MERET()-1) return;
+                    }else
+                    if(fenyblokk[poz] == FenyForras.TELI){
+                        voltTeli = true;
+                    }
                 }
-            }
-            
-            setFenyTerkep(kepX, kepY, szin);
-            
-            if(x0 == x1 && y0 == y1) break;
-            
-            e2 = 2*err;
-            
-            if(e2 > -1 * dy){
-                err -= dy;
-                x0 += sx;
-            }
-            
-            if(e2 < dx){
-                err += dx;
-                y0 += sy;
+
+                setFenyTerkep(kepX, kepY, szin);
+
+                if(x0 == x1 && y0 == y1) break;
+
+                e2 = 2*err;
+
+                if(e2 > -1 * dy){
+                    err -= dy;
+                    x0 += sx;
+                }
+
+                if(e2 < dx){
+                    err += dx;
+                    y0 += sy;
+                }
             }
         }
     }
+
+    public void changeHelp() {
+        this.help = !help;
+    }
+
+    public void changeFeny() {
+        this.feny = !feny;
+    }
+
+    void changeColl() {
+        this.coll = !coll;
+    }
+
+    public boolean isHelp() {
+        return help;
+    }
+
+    public boolean isFeny() {
+        return feny;
+    }
+
+    public boolean isColl() {
+        return coll;
+    }
+    
+    
+    
 }

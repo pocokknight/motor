@@ -1,17 +1,18 @@
 package motor.fizika;
 
-import jatek.blockok.Edge;
-import jatek.blockok.Fold;
-import jatek.blockok.Levego;
+import jatek.Karakterek.Player;
+import jatek.blockok.*;
+import java.awt.event.MouseEvent;
 import java.util.Vector;
-import motor.JatekMag;
-import motor.Render;
+import motor.*;
 
 public class Vilag {
 
+    private boolean UT;
     private int BLOCK_MERET;
     private Block[][] KOCKAK;
     private Vector<Karakter> KARAKTEREK = new Vector();
+    private Player PLAYER;
     public Vector<int[]> b = new Vector();
     public Vector<int[]> j = new Vector();
     public Vector<int[]> f = new Vector();
@@ -19,23 +20,20 @@ public class Vilag {
     private boolean REPEAT;
     private Block EDGE;
     private FenyForras KAR_FENY;
-    private FenyForras TESZT_FENY;
-    private FenyForras TESZT_FENY2;
     
     public Vilag(int blockMeret,int szel,int mag,boolean repeat) {
         BLOCK_MERET = blockMeret;
         KOCKAK = new Block[szel][mag];
         REPEAT = repeat;
         EDGE = new Edge();
-        KAR_FENY = new FenyForras(200, 150, 0xaaaaff);
-        TESZT_FENY = new FenyForras(100, 255, 0xffffaa);
-        TESZT_FENY2 = new FenyForras(200, 255, 0xaaffff);
+        KAR_FENY = new FenyForras(200, 150, 0xffffff);
+        UT = false;
     }
 
     public void general() {
         for (int i = 0; i < KOCKAK.length; i++) {
             for (int j = 0; j < KOCKAK[0].length; j++) {
-                if((i % 5 == 0 && (j > 7 && j < 12)) || (i == 10 && (j % 15 != 0 && j % 15 != 1)) || (i == j) || (i+1 == j))
+                if( (j > KOCKAK[0].length-2) ||  (j == KOCKAK[0].length-7 && i % 20 > 2 && i % 20 < 18) || (j == KOCKAK[0].length-13 && i % 20 > 6 && i % 20 < 14) )
                     KOCKAK[i][j] = new Fold();
                 else
                     KOCKAK[i][j] = new Levego();
@@ -43,45 +41,59 @@ public class Vilag {
         }
     }
 
-    public void render(JatekMag jm, Render r) {
-        for (int i = 0; i < KOCKAK.length; i++) {
-            for (int j = 0; j < KOCKAK[0].length; j++) {
-                r.drawRect((int)(BLOCK_MERET*i-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,KOCKAK[i][j].szin,KOCKAK[i][j].getAtl());
-            }
-        }
+    public void frissit(JatekMag jm, double dt) {
         
-        for (int i = 0; i < b.size(); i++) {
-            r.drawRect((int)(BLOCK_MERET*b.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*b.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x99ff0000,0);
-        }
-        for (int i = 0; i < j.size(); i++) {
-            r.drawRect((int)(BLOCK_MERET*j.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*j.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x9900ff00,0);
-        }
-        for (int i = 0; i < l.size(); i++) {
-            r.drawRect((int)(BLOCK_MERET*l.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*l.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x9900ffff,0);
-        }
-        for (int i = 0; i < f.size(); i++) {
-            r.drawRect((int)(BLOCK_MERET*f.get(i)[0]-KARAKTEREK.get(0).pozX),(int)(BLOCK_MERET*f.get(i)[1]-KARAKTEREK.get(0).pozY),BLOCK_MERET,BLOCK_MERET,0x990000ff,0);
-        }
+        PLAYER.frissit(this, jm, dt, UT);
         
         for (int i = 0; i < KARAKTEREK.size(); i++) {
             Karakter k = KARAKTEREK.get(i);
-            r.drawRect((jm.getAblak().getSzel()-k.szel)/2, (jm.getAblak().getMag()-k.mag)/2, k.szel, k.mag, k.szin,0);
+            k.frissit(this,jm,dt);
         }
         
-        r.addFeny(this,KAR_FENY,jm.getAblak().getSzel()/2,jm.getAblak().getMag()/2-KARAKTEREK.get(0).mag/2-1);
-        r.addFeny(this,TESZT_FENY,(int)(200-KARAKTEREK.get(0).pozX),(int)(50-KARAKTEREK.get(0).pozY));
+        if(PLAYER.getEszkoz().utallapot >= PLAYER.getEszkoz().utallapotmax){
+            UT = false;
+            PLAYER.getEszkoz().utallapot = PLAYER.getEszkoz().utallpotmin;
+        }
+        
+        if(jm.getBevitel().isEgerTart(MouseEvent.BUTTON1)){
+            UT = true;
+        }
+    }
+
+    public void render(JatekMag jm, Render r) {
+        for (int i = 0; i < KOCKAK.length; i++) {
+            for (int j = 0; j < KOCKAK[0].length; j++) {
+                r.drawRect((int)(BLOCK_MERET*i-PLAYER.pozX),(int)(BLOCK_MERET*j-PLAYER.pozY),BLOCK_MERET,BLOCK_MERET,KOCKAK[i][j].szin,KOCKAK[i][j].getAtl());
+            }
+        }
+        
+        if(jm.getRender().isColl()){
+            for (int i = 0; i < b.size(); i++) {
+                r.drawRect((int)(BLOCK_MERET*b.get(i)[0]-PLAYER.pozX),(int)(BLOCK_MERET*b.get(i)[1]-PLAYER.pozY),BLOCK_MERET,BLOCK_MERET,0x99ff0000,0);
+            }
+            for (int i = 0; i < j.size(); i++) {
+                r.drawRect((int)(BLOCK_MERET*j.get(i)[0]-PLAYER.pozX),(int)(BLOCK_MERET*j.get(i)[1]-PLAYER.pozY),BLOCK_MERET,BLOCK_MERET,0x9900ff00,0);
+            }
+            for (int i = 0; i < l.size(); i++) {
+                r.drawRect((int)(BLOCK_MERET*l.get(i)[0]-PLAYER.pozX),(int)(BLOCK_MERET*l.get(i)[1]-PLAYER.pozY),BLOCK_MERET,BLOCK_MERET,0x9900ffff,0);
+            }
+            for (int i = 0; i < f.size(); i++) {
+                r.drawRect((int)(BLOCK_MERET*f.get(i)[0]-PLAYER.pozX),(int)(BLOCK_MERET*f.get(i)[1]-PLAYER.pozY),BLOCK_MERET,BLOCK_MERET,0x990000ff,0);
+            }
+        }
+        
+        PLAYER.render(jm,r,UT);
+        
+        for (int i = 0; i < KARAKTEREK.size(); i++) {
+            Karakter k = KARAKTEREK.get(i);
+        }
+        
+        r.addFeny(this,KAR_FENY,jm.getAblak().getSzel()/2,jm.getAblak().getMag()/2-PLAYER.mag/2-1);
         
     }
 
     public void addKarakter(Karakter k) {
         KARAKTEREK.add(k);
-    }
-
-    public void frissit(JatekMag jm, double dt) {
-        for (int i = 0; i < KARAKTEREK.size(); i++) {
-            Karakter k = KARAKTEREK.get(i);
-            k.frissit(this,jm,dt);
-        }
     }
 
     public int getBLOCK_MERET() { return BLOCK_MERET; }
@@ -106,7 +118,9 @@ public class Vilag {
 
     public boolean isREPEAT() { return REPEAT; }
     
-    public double getCamX(){ return KARAKTEREK.get(0).pozX; }
-    public double getCamY(){ return KARAKTEREK.get(0).pozY; }
+    public double getCamX(){ return PLAYER.pozX; }
+    public double getCamY(){ return PLAYER.pozY; }
+    public Player getPLAYER() { return PLAYER; }
+    public void setPLAYER(Player PLAYER) { this.PLAYER = PLAYER; }
     
 }

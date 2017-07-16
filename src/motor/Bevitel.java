@@ -57,6 +57,9 @@ public class Bevitel implements KeyListener,MouseListener,MouseMotionListener,Mo
         billentyuk[ke.getKeyCode()] = true;
         //ideiglenes leállító
         if(ke.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
+        if(ke.getKeyCode() == KeyEvent.VK_F1) jm.getRender().changeHelp();
+        if(ke.getKeyCode() == KeyEvent.VK_F2) jm.getRender().changeFeny();
+        if(ke.getKeyCode() == KeyEvent.VK_F3) jm.getRender().changeColl();
     }
 
     @Override
